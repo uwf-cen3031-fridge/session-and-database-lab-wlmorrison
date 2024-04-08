@@ -44,19 +44,21 @@ export class AppController {
 
     //PROTECT THE HOMEPAGE
 
-    this.router.use((req: any, res: Response, next) => {
-      if (req.session.use) {
+    this.router.use((req: any, res, next) => {
+      if (req.session.user) {
         next();
       } else {
-        res.redirect("/login");
+        res.status(200).send("You need to log in first.");
       }
     });
 
     // Serve the home page
-    this.router.get("/", (req: Request, res: Response) => {
+    this.router.get("/", (req: any, res: Response) => {
       try {
         // Render the "home" template as HTML
-        res.render("home");
+        res.render("home", {
+          user: req.session.user,
+        });
       } catch (err) {
         this.log.error(err);
       }
