@@ -7,6 +7,7 @@ import { pino } from 'pino';
 import { AppController } from "./controllers/app.controller";
 import { ErrorMiddleware } from "./middleware/error.middleware";
 import { HandlebarsMiddleware } from "./middleware/handlebars.middleware";
+import { UserService } from "./services/user.service";
 
 class App {
   // Create an instance of express, called "app"
@@ -17,13 +18,16 @@ class App {
   // Middleware and controller instances
   private errorMiddleware: ErrorMiddleware;
   private appController: AppController;
+  private userService: UserService;
 
   constructor(port: number) {
     this.port = port;
 
+    this.userService = new UserService();
+
     // Init the middlware and controllers
     this.errorMiddleware = new ErrorMiddleware();
-    this.appController = new AppController();
+    this.appController = new AppController(this.userService);
 
     // Serve all static resources from the public directory
     this.app.use(express.static(__dirname + "/public"));
